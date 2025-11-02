@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import '../theme/app_theme.dart';
 import 'wallet_screen.dart';
-import 'minutes_screen.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,50 +13,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
-  late List<Widget> _screens;
-
-  @override
-  void initState() {
-    super.initState();
-    _screens = [
-      const DashboardScreen(),
-      const WalletScreen(),
-      const MinutesScreen(),
-      ProfileScreen(userPhone: widget.userPhone),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _screens),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.grey500,
-        backgroundColor: AppColors.white,
-        elevation: 8,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Ana Sayfa'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
-            label: 'Cüzdan',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            label: 'Dakikalar',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
-        ],
-      ),
-    );
+    return const DashboardScreen();
   }
 }
 
@@ -96,67 +53,272 @@ class DashboardScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 40),
 
-              // Merkez Logo ve Dairesel Menü
-              SizedBox(
-                height: 400,
-                child: Stack(
-                  alignment: Alignment.center,
+              // Logo
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const LinearGradient(
+                    colors: [AppColors.primary, AppColors.accent],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  border: Border.all(color: AppColors.white, width: 4),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Arka plan daire
-                    Container(
-                      width: 350,
-                      height: 350,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.3),
-                          width: 2,
-                        ),
+                    Text(
+                      'KIDSTOPIA',
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
                       ),
                     ),
-
-                    // Merkez Logo
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: const LinearGradient(
-                          colors: [AppColors.primary, AppColors.accent],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        border: Border.all(color: AppColors.white, width: 4),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'KIDSTOPIA',
-                            style: TextStyle(
-                              color: AppColors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                          Text(
-                            "children's workshops",
-                            style: TextStyle(
-                              color: AppColors.white.withValues(alpha: 0.9),
-                              fontSize: 8,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      "children's workshops",
+                      style: TextStyle(
+                        color: AppColors.white.withValues(alpha: 0.9),
+                        fontSize: 8,
                       ),
                     ),
-
-                    // Dairesel Menü Öğeleri
-                    ..._buildCircularMenuItems(context),
                   ],
                 ),
               ),
 
+              const SizedBox(height: 30),
+
+              // Menü Box'ları
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    // İlk satır - 2 box
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildMenuBox(
+                            icon: Icons.account_balance_wallet,
+                            title: 'CÜZDAN',
+                            color: const Color(0xFF4CAF50),
+                            onTap: () {
+                              // Cüzdan sayfasına git
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const WalletScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildMenuBox(
+                            icon: Icons.person,
+                            title: 'PROFİL',
+                            color: const Color(0xFF2196F3),
+                            onTap: () {
+                              // Profil sayfasına git
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfileScreen(userPhone: 'user_phone'),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // İkinci satır - 2 box
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildMenuBox(
+                            icon: Icons.videocam,
+                            title: 'CANLI İZLE',
+                            color: const Color(0xFFFF5722),
+                            onTap: () {
+                              // Canlı İzle sayfasına git
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const LiveStreamScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildMenuBox(
+                            icon: Icons.campaign,
+                            title: 'KAMPANYALAR',
+                            color: const Color(0xFF9C27B0),
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Kampanyalar sayfası yakında!'),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Üçüncü satır - Dakikalar bölümü
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.access_time,
+                                color: AppColors.primary,
+                                size: 24,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'DAKİKALAR',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Kalan Süre',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  Text(
+                                    '45 dakika',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(24),
+                                      ),
+                                    ),
+                                    builder: (context) {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(24.0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Dakika Paketleri',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            _minutePackageTile(
+                                              '30 dakika',
+                                              '₺60',
+                                              '',
+                                            ),
+                                            _minutePackageTile(
+                                              '1 saat',
+                                              '₺100',
+                                              '10 dk hediye',
+                                            ),
+                                            _minutePackageTile(
+                                              '2 saat',
+                                              '₺180',
+                                              '15 dk hediye',
+                                            ),
+                                            _minutePackageTile(
+                                              '3 saat',
+                                              '₺250',
+                                              '30 dk hediye',
+                                            ),
+                                            _minutePackageTile(
+                                              '4 saat',
+                                              '₺320',
+                                              '45 dk hediye',
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: const Text(
+                                  'Dakika Satın Al',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 30),
 
               // Alt Kart Slider
@@ -196,65 +358,45 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildCircularMenuItems(BuildContext context) {
-    final menuItems = [
-      {'icon': Icons.account_balance_wallet, 'label': 'CÜZDANIM', 'angle': 0.0},
-      {'icon': Icons.videocam, 'label': 'YAYRUYU İZLE', 'angle': math.pi / 4},
-      {'icon': Icons.info, 'label': 'BİLGİLERİM', 'angle': math.pi / 2},
-      {
-        'icon': Icons.location_on,
-        'label': 'ŞUBELERİMİZ',
-        'angle': 3 * math.pi / 4,
-      },
-      {'icon': Icons.smart_toy, 'label': 'AIO', 'angle': math.pi},
-      {'icon': Icons.store, 'label': 'BAYILIK', 'angle': 5 * math.pi / 4},
-      {'icon': Icons.games, 'label': 'OYUNLAR', 'angle': 3 * math.pi / 2},
-      {
-        'icon': Icons.campaign,
-        'label': 'KAMPANYALAR',
-        'angle': 7 * math.pi / 4,
-      },
-    ];
-
-    return menuItems.map((item) {
-      final angle = item['angle'] as double;
-      final radius = 140.0;
-      final x = radius * math.cos(angle);
-      final y = radius * math.sin(angle);
-
-      return Positioned(
-        left: 175 + x - 40,
-        top: 175 + y - 40,
-        child: CircularMenuItem(
-          icon: item['icon'] as IconData,
-          label: item['label'] as String,
-          onTap: () {
-            _handleMenuItemTap(context, item['label'] as String);
-          },
+  Widget _buildMenuBox({
+    required IconData icon,
+    required String title,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 100,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-      );
-    }).toList();
-  }
-
-  void _handleMenuItemTap(BuildContext context, String label) {
-    switch (label) {
-      case 'CÜZDANIM':
-        // Navigate to wallet
-        break;
-      case 'YAYRUYU İZLE':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const LiveStreamScreen()),
-        );
-        break;
-      case 'BİLGİLERİM':
-        // Navigate to info
-        break;
-      default:
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('$label sayfası yakında!')));
-    }
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 32),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildPromotionCard(
@@ -325,6 +467,47 @@ class DashboardScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Dakika paket kartı widget'ı
+  Widget _minutePackageTile(String title, String price, String gift) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (gift.isNotEmpty)
+                  Text(
+                    gift,
+                    style: const TextStyle(fontSize: 12, color: Colors.green),
+                  ),
+              ],
+            ),
+            Text(
+              price,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
