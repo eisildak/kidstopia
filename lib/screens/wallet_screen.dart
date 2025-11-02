@@ -9,7 +9,7 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  double currentBalance = 140.0; // CED-GO'daki gibi bakiye
+  double currentBalance = 140.0; // bakiye miktarı
 
   @override
   Widget build(BuildContext context) {
