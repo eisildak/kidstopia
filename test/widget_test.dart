@@ -1,0 +1,31 @@
+// This is a basic Flutter widget test.
+//
+// To perform an interaction with a widget in your test, use the WidgetTester
+// utility in the flutter_test package. For example, you can send tap and scroll
+// gestures. You can also use WidgetTester to find child widgets in the widget
+// tree, read text, and verify that the values of widget properties are correct.
+
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:kidstopia/main.dart';
+
+void main() {
+  testWidgets('Kidstopia app loads welcome screen', (
+    WidgetTester tester,
+  ) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const KidstopiaApp());
+
+    // Verify that our welcome screen loads with the app title.
+    expect(find.text('Kidstopia'), findsOneWidget);
+    expect(find.text('Çocuk Oyun Alanı Yönetim Sistemi'), findsOneWidget);
+    expect(find.text('Başlayın'), findsOneWidget);
+
+    // Tap the get started button
+    await tester.tap(find.text('Başlayın'));
+    await tester.pumpAndSettle();
+
+    // Verify navigation to login screen
+    expect(find.text('Giriş Yap'), findsOneWidget);
+  });
+}
